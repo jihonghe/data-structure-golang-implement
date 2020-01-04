@@ -97,3 +97,86 @@ func TestSingleLinkList_Insert(t *testing.T) {
 		t.Error("Insert() Error: add element to list failed.")
 	}
 }
+
+func TestSingleLinkList_DeleteFirst(t *testing.T) {
+	// 校验关键点：
+	// 1. 当表为空时能否正确处理
+	// 2. 当表不为空时能否正确删除：表长、第一个元素
+
+	list := New()
+	deletedValue := list.DeleteFirst()
+	if deletedValue != nil {
+		t.Error("DeleteFirst() Error(): the empty list should delete operation should return nil.")
+	}
+
+	list.BulkAppend(3, true, "hello")
+	deletedValue = list.DeleteFirst()
+	if deletedValue != 3 || list.length != 2 {
+		t.Error("DeleteFirst() Error: list delete the first element failed.")
+	}
+}
+
+func TestSingleLinkList_DeleteLast(t *testing.T) {
+	// 校验关键点：
+	// 1. 当表为空时能否正确处理
+	// 2. 当表不为空时是否有效删除表尾元素
+
+	list := New()
+	deletedValue := list.DeleteLast()
+	if deletedValue != nil {
+		t.Error("DeleteLast() Error: the empty list delete operation should return nil.")
+	}
+
+	list.BulkAppend(2, 1, "i", nil, nil)
+	deletedValue = list.DeleteLast()
+	if deletedValue != nil || list.length != 4 {
+		t.Error("DeleteLast() Error: list delete the last element failed.")
+	}
+	list.Traverse()
+}
+
+func TestSingleLinkList_Delete(t *testing.T) {
+	// 校验关键点：
+	// 1. 表为空时能否正确处理
+	// 2. 表不为空时，能否正确处理特殊位置的删除：表尾和表首
+	// 3. 删除中间位置的元素
+	// 4. 删除元素后，表长是否正确
+
+	list := New()
+	deletedValue := list.Delete(9)
+	if deletedValue != nil || list.length != 0 {
+		t.Error("Delete() Error: the empty list delete operation should return nil.")
+	}
+
+	list.BulkAppend(3, 1, 9, true, "hello", false, nil)
+	deletedValue = list.Delete(0)
+	if deletedValue != 3 || list.length != 6 {
+		t.Error("Delete() Error: list delete operation failed.")
+	}
+	list.Traverse()
+	deletedValue = list.Delete(5)
+	if deletedValue != nil || list.length != 5 {
+		t.Error("Delete() Error: list delete operation failed.")
+	}
+	list.Traverse()
+
+	deletedValue = list.Delete(2)
+	if elemVal := deletedValue.(bool); !elemVal || list.length != 4 {
+		t.Error("Delete() Error: list delete operation failed.")
+	}
+	list.Traverse()
+}
+
+func TestSingleLinkList_Clear(t *testing.T) {
+	list := New()
+	deleteCount := list.Clear()
+	if deleteCount != 0 {
+		t.Error("Clear() Error: the empty list clear operation should return 0.")
+	}
+
+	list.BulkAppend(3, true, "hello")
+	deleteCount = list.Clear()
+	if deleteCount != 3 || list.first != nil || list.last != list.last {
+		t.Error("Clear() Error: list clear operation failed.")
+	}
+}

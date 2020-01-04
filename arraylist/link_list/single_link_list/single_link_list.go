@@ -140,6 +140,83 @@ func (l *SingleLinkList) Insert(elementValue interface{}, index int) {
 	}
 }
 
+// DeleteFirst: 从头部删除一个元素
+func (l *SingleLinkList) DeleteFirst() interface{} {
+	if l.IsEmpty() {
+		println("The list is empty.")
+		return nil
+	}
+
+	deletedElement := l.first
+	l.first = l.first.next
+	l.length--
+
+	return deletedElement.value
+}
+
+// DeleteLast: 删除标为元素
+func (l *SingleLinkList) DeleteLast() interface{} {
+	if l.IsEmpty() {
+		println("The list is empty.")
+		return nil
+	}
+
+	deletedElement := l.last
+	newLast := l.first
+	for index := 1; index < l.length - 1; index++ {
+		newLast = newLast.next
+	}
+	for ; newLast.next != deletedElement; newLast = newLast.next {}
+	l.last = newLast
+	l.last.next = nil
+	l.length--
+
+	return deletedElement.value
+}
+
+// Delete: 删除指定位置的元素
+func (l *SingleLinkList) Delete(index int) interface{} {
+	if l.IsEmpty() {
+		println("The list is empty.")
+		return nil
+	}
+
+	if index < 0 || index >= l.length {
+		println("The index is invalid.")
+		return nil
+	}
+
+	if index == 0 {
+		return l.DeleteFirst()
+	} else if index == l.length - 1 {
+		return l.DeleteLast()
+	} else {
+		tmpIndex := 0
+		preElement := l.first
+		for ; tmpIndex != index - 1; tmpIndex++ {
+			preElement = preElement.next
+		}
+		deletedElement := preElement.next
+		preElement.next = preElement.next.next
+		l.length--
+
+		return deletedElement.value
+	}
+}
+
+// Clear: 删除链表所有元素
+func (l *SingleLinkList) Clear() int {
+	if l.IsEmpty() {
+		return 0
+	}
+
+	l.first, l.last = nil, nil
+	deleteCount := l.length
+	l.length = 0
+
+	return deleteCount
+}
+
 // IsEmpty: 判断单链表是否为空
 func (l SingleLinkList) IsEmpty() bool {
 	return l.length == 0
