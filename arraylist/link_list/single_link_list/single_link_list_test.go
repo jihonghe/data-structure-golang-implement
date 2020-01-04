@@ -1,6 +1,7 @@
 package single_link_list
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -168,6 +169,10 @@ func TestSingleLinkList_Delete(t *testing.T) {
 }
 
 func TestSingleLinkList_Clear(t *testing.T) {
+	// 校验关键点：
+	// 1. 表为空时能否正确处理
+	// 2. 表不为空时，清除链表后的表长度及表的首尾指针的指向
+
 	list := New()
 	deleteCount := list.Clear()
 	if deleteCount != 0 {
@@ -178,5 +183,46 @@ func TestSingleLinkList_Clear(t *testing.T) {
 	deleteCount = list.Clear()
 	if deleteCount != 3 || list.first != nil || list.last != list.last {
 		t.Error("Clear() Error: list clear operation failed.")
+	}
+}
+
+func TestSingleLinkList_Get(t *testing.T) {
+	// 校验关键点：
+	// 1. 表为空时能否正确处理
+	// 2. 表不为空时能否正确返回对应的值
+
+	list := New()
+	val, err := list.Get(9)
+	if err == nil || val != nil {
+		t.Error("Get() Error: the empty list return errors should not be nil.")
+	}
+
+	list.BulkAppend(3, true, "hello", 3.14)
+	val, err = list.Get(2)
+	if err != nil || val != "hello" {
+		t.Error("Get() Error: the list get operation failed.")
+	}
+	fmt.Printf("%v\n", val)
+}
+
+func TestSingleLinkList_Set(t *testing.T) {
+	// 校验关键点：
+	// 1. 表为空时能否正确处理
+	// 2. 表不为空时，是否达到了修改的目的
+
+	list := New()
+	oldVal, err := list.Set(false, 3)
+	if err == nil || oldVal != nil {
+		t.Error("Set() Error: the empty list set operation return error should not be nil.")
+	}
+
+	list.BulkAppend(3, 2, true, "hello")
+	oldVal, err = list.Get(9)
+	if err == nil || oldVal != nil {
+		t.Error("Set() Error: the invalid index of list set operation failed.")
+	}
+	oldVal, err = list.Get(1)
+	if err != nil || oldVal != 2 {
+		t.Error("Set() Error: the list set operation failed.")
 	}
 }

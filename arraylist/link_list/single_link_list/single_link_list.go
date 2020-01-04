@@ -1,6 +1,9 @@
 package single_link_list
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type element struct {
 	value interface{}
@@ -215,6 +218,59 @@ func (l *SingleLinkList) Clear() int {
 	l.length = 0
 
 	return deleteCount
+}
+
+// Get: 获取指定位置的元素
+// range of index: [0, length - 1]
+func (l SingleLinkList) Get(index int) (interface{}, error) {
+	if l.IsEmpty() {
+		return nil, errors.New("the list is empty")
+	} else if index < 0 || index >= l.Length() {
+		return nil, errors.New("the given index is invalid")
+	} else {
+		if index == 0 {
+			return l.first.value, nil
+		} else if index == l.Length() - 1 {
+			return l.last.value, nil
+		} else {
+			targetElement := l.first
+			for tmpIndex := 0; tmpIndex < index; tmpIndex++ {
+				targetElement = targetElement.next
+			}
+			return targetElement.value, nil
+		}
+	}
+}
+
+// Set: 修改单链表的某一个元素的值
+func (l *SingleLinkList) Set(elementValue interface{}, index int) (interface{}, error) {
+	if l.IsEmpty() {
+		return nil, errors.New("the list is empty")
+	}
+
+	if index == 0 {
+		oldVal := l.first.value
+		l.first.value = elementValue
+		return oldVal, nil
+	} else if index == l.Length() - 1 {
+		oldVal := l.last.value
+		l.last.value = elementValue
+		return oldVal, nil
+	} else {
+		targetElement := l.first
+		for ; index != 0; index-- {
+			targetElement = targetElement.next
+		}
+		oldVal := targetElement.value
+		targetElement.value = elementValue
+
+		return oldVal, nil
+	}
+}
+
+// Length: 获取单链表的长度
+func (l SingleLinkList) Length() int {
+	return l.length
 }
 
 // IsEmpty: 判断单链表是否为空
