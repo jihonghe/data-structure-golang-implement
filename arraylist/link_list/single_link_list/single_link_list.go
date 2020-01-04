@@ -242,6 +242,41 @@ func (l SingleLinkList) Get(index int) (interface{}, error) {
 	}
 }
 
+// Index: 获取链表中某元素值第一次出现的索引(如果有)
+// param elementValue: 索要查找的元素的值
+// return: 如果元素在链表中，则返回对应元素值的索引；否则，返回-1
+func (l SingleLinkList) Index(elementValue interface{}) int {
+	if l.IsEmpty() {
+		println("The list is empty.")
+		return -1
+	}
+
+	index := 0
+	for tmpElement := l.first; tmpElement != nil; tmpElement = tmpElement.next {
+		if tmpElement.value == elementValue {
+			break
+		}
+		index++
+	}
+
+	if index >= l.Length() {
+		return -1
+	}
+
+	return index
+}
+
+// Contains: 判断一个元素值是否在链表中
+// param elementValue: 待查找的元素值
+// return: 如果元素值在链表中则返回true, 否则返回false
+func (l SingleLinkList) Contains(elementValue interface{}) bool {
+	if l.Index(elementValue) == -1 {
+		return false
+	} else {
+		return true
+	}
+}
+
 // Set: 修改单链表的某一个元素的值
 func (l *SingleLinkList) Set(elementValue interface{}, index int) (interface{}, error) {
 	if l.IsEmpty() {

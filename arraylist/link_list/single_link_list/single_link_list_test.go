@@ -205,6 +205,29 @@ func TestSingleLinkList_Get(t *testing.T) {
 	fmt.Printf("%v\n", val)
 }
 
+func TestSingleLinkList_Index(t *testing.T) {
+	// 校验关键点：
+	// 1. 表为空时能否正确处理
+	// 2. 表不为空时能否正确处理所查元素的位置
+
+	list := New()
+	index := list.Index(9)
+	if index != -1 {
+		t.Error("Index() Error: the empty list should return -1")
+	}
+
+	list.BulkAppend(3, 1, true, "hello", 3.14)
+	index = list.Index(false)
+	if index != -1 {
+		t.Error("Index() Error: the index of element that not in the list should return -1.")
+	}
+
+	index = list.Index(true)
+	if index != 2 {
+		t.Error("Index() Error: the index of element in the list should return the 2.")
+	}
+}
+
 func TestSingleLinkList_Set(t *testing.T) {
 	// 校验关键点：
 	// 1. 表为空时能否正确处理
