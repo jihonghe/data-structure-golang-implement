@@ -246,25 +246,27 @@ func (l SingleLinkList) Get(index int) (interface{}, error) {
 func (l *SingleLinkList) Set(elementValue interface{}, index int) (interface{}, error) {
 	if l.IsEmpty() {
 		return nil, errors.New("the list is empty")
-	}
-
-	if index == 0 {
-		oldVal := l.first.value
-		l.first.value = elementValue
-		return oldVal, nil
-	} else if index == l.Length() - 1 {
-		oldVal := l.last.value
-		l.last.value = elementValue
-		return oldVal, nil
+	} else if index < 0 || index >= l.Length() {
+		return nil, errors.New("the given index is invalid")
 	} else {
-		targetElement := l.first
-		for ; index != 0; index-- {
-			targetElement = targetElement.next
-		}
-		oldVal := targetElement.value
-		targetElement.value = elementValue
+		if index == 0 {
+			oldVal := l.first.value
+			l.first.value = elementValue
+			return oldVal, nil
+		} else if index == l.Length() - 1 {
+			oldVal := l.last.value
+			l.last.value = elementValue
+			return oldVal, nil
+		} else {
+			targetElement := l.first
+			for ; index != 0; index-- {
+				targetElement = targetElement.next
+			}
+			oldVal := targetElement.value
+			targetElement.value = elementValue
 
-		return oldVal, nil
+			return oldVal, nil
+		}
 	}
 }
 

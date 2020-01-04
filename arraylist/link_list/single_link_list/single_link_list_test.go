@@ -208,7 +208,8 @@ func TestSingleLinkList_Get(t *testing.T) {
 func TestSingleLinkList_Set(t *testing.T) {
 	// 校验关键点：
 	// 1. 表为空时能否正确处理
-	// 2. 表不为空时，是否达到了修改的目的
+	// 2. 表不为空时能否正确处理不合理的index
+	// 3. 表不为空时，能否正确修改合理的index的值
 
 	list := New()
 	oldVal, err := list.Set(false, 3)
@@ -217,12 +218,13 @@ func TestSingleLinkList_Set(t *testing.T) {
 	}
 
 	list.BulkAppend(3, 2, true, "hello")
-	oldVal, err = list.Get(9)
+	oldVal, err = list.Set(9, 7)
 	if err == nil || oldVal != nil {
 		t.Error("Set() Error: the invalid index of list set operation failed.")
 	}
-	oldVal, err = list.Get(1)
-	if err != nil || oldVal != 2 {
-		t.Error("Set() Error: the list set operation failed.")
+	oldVal, err = list.Set(1, 1)
+	val, err1 := list.Get(1)
+	if err != nil || err1 != nil || val != 1 {
+		t.Error("Get() Error: the list get operation failed.")
 	}
 }
