@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-type SequenceList struct {
+	type SequenceList struct {
 	// 通过切片存储元素值
 	elements []int
 	// 顺序表元素个数
@@ -71,7 +71,7 @@ func (l *SequenceList) Insert(elementValue int, index int) bool {
 	}
 
 	l.elements = append(l.elements, elementValue)
-	copy(l.elements[index + 1:], l.elements[index:l.length])
+	copy(l.elements[index+1:], l.elements[index:l.length])
 	l.elements[index] = elementValue
 	l.length++
 
@@ -103,8 +103,8 @@ func (l *SequenceList) Delete(index int) bool {
 		return false
 	}
 
-	copy(l.elements[index:], l.elements[index + 1:])
-	l.elements = l.elements[:l.length - 1]
+	copy(l.elements[index:], l.elements[index+1:])
+	l.elements = l.elements[:l.length-1]
 	l.length--
 
 	return true
