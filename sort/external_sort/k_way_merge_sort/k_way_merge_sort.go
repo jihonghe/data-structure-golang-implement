@@ -16,17 +16,15 @@ func KWayMergeSort(array []int) []int {
 		sort.Ints(array)
 		return array
 	}
-	arraysCount := GetGroupCount(arrayLength, baseArrayLength)
 
-	var subArrays []([]int)
-	for index := 1; index <= arraysCount; index++ {
-		if index * baseArrayLength > arrayLength {
-			subArray := array[(index - 1) * baseArrayLength: arrayLength]
-			subArrays = append(subArrays, subArray)
+	arraysCount := GetGroupCount(arrayLength, baseArrayLength)
+	subArrays := make([]([]int), arraysCount, arraysCount + 1)
+	for index := 0; index < arraysCount; index++ {
+		if (index + 1) * baseArrayLength > arrayLength {
+			subArrays[index] = array[index * baseArrayLength: arrayLength]
 			break
 		}
-		subArray := array[(index - 1) * baseArrayLength: index * baseArrayLength]
-		subArrays = append(subArrays, subArray)
+		subArrays[index] = array[index * baseArrayLength: (index + 1) * baseArrayLength]
 	}
 
 	for i, subArray := range subArrays {

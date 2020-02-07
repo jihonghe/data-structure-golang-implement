@@ -38,10 +38,15 @@ func TestGetRandomSlice(t *testing.T) {
 
 func TestKWayMergeSort(t *testing.T) {
 	nums := utils.ReadIntsFromFile("nums")
+	//nums := k_way_merge_sort.GetRandomSlice(10000000, 100)
+	//k_way_merge_sort.TraverseIntArray(nums)
 
 	//k_way_merge_sort.TraverseIntArray(nums)
 	start := time.Now().UnixNano()
 	nums = k_way_merge_sort.KWayMergeSort(nums)
 	end := time.Now().UnixNano()
-	println("Merge sort time costs:", int(float64(end - start) / 1e9))
+	println()
+	fmt.Printf("arrayLength: %d, time: %d\n", len(nums), int(float64(end - start) / 1e9))
+	println()
+	//k_way_merge_sort.TraverseIntArray(nums)
 }
