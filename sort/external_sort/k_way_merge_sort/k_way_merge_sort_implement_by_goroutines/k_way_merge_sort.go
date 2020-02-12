@@ -23,7 +23,7 @@ func MergeSort(src []int64) {
 	// 执行多路归并
 	start = time.Now().UnixNano()
 	dst := make([]int64, srcLength)
-	//Merge(dst, sortedSubArrays)
+	// Merge(dst, sortedSubArrays)
 	dst = getMergedArray(sortedSubArrays, mergeBaseLength)
 	end = time.Now().UnixNano()
 	fmt.Printf("merge-time-costs: %3f\n", float64(end-start)/1e9)
@@ -52,7 +52,7 @@ func getMergedArray(sortedArrays [][]int64, mergeBaseLength int64) []int64 {
 			subLeftIndex, subRightIndex = subRightIndex, subRightIndex + baseLength
 			dstLength := (subRightIndex - subLeftIndex) * unitArrayLength
 			dst := make([]int64, dstLength, dstLength)
-			go Merge2(dst, subArrays, wg)
+			go Merge(dst, subArrays, wg)
 			subSortedArrays[index] = dst
 		}
 		wg.Wait()
@@ -66,13 +66,13 @@ func getMergedArray(sortedArrays [][]int64, mergeBaseLength int64) []int64 {
 	}
 	wg.Add(1)
 	dst := make([]int64, len(sortedArrays) * len(sortedArrays[0]))
-	go Merge2(dst, sortedArrays, wg)
+	go Merge(dst, sortedArrays, wg)
 	wg.Wait()
 
 	return dst
 }
 
-func Merge2(dst []int64, sortedArrays [][]int64, wg *sync.WaitGroup) {
+func Merge(dst []int64, sortedArrays [][]int64, wg *sync.WaitGroup) {
 	defer wg.Done()
 	k := len(sortedArrays)
 	if k == 1 {
@@ -100,63 +100,6 @@ func Merge2(dst []int64, sortedArrays [][]int64, wg *sync.WaitGroup) {
 	// 合并
 	start := time.Now().UnixNano()
 	for index := 0; index < dstLength; {
-		// 若所有序列中的元素已处理或在堆中，则将堆中剩余的节点按照顺序放入finalArray中后退出循环，完成所有元素排序
-		if len(arrayIdValidIndexMap) == 0 && !minHeap.IsEmpty() {
-			for !minHeap.IsEmpty() {
-				dst[index] = minHeap.PopRoot().value
-				index++
-			}
-			break
-		}
-
-		// 取出堆顶节点，将其插入finalArray中
-		rootNodeElement := minHeap.PopRoot()
-		dst[index] = rootNodeElement.value
-		index++
-		// 获取下一个待插入堆中的元素所在的序列
-		arrayIdOfNextValidIndex := rootNodeElement.srcArray
-		if _, ok := arrayIdValidIndexMap[arrayIdOfNextValidIndex]; !ok {
-			for arrayIndex := range arrayIdValidIndexMap {
-				arrayIdOfNextValidIndex = arrayIndex
-				break
-			}
-		}
-		// 补充堆节点
-		minHeap.AppendNode(*NewTraceableElement(
-			sortedArrays[arrayIdOfNextValidIndex][arrayIdValidIndexMap[arrayIdOfNextValidIndex]],
-			arrayIdOfNextValidIndex))
-		// 修改对应列表中的处理元素的下标并校验下标是否有效，若无效则从map中删除该序列
-		arrayIdValidIndexMap[arrayIdOfNextValidIndex]++
-		if arrayIdValidIndexMap[arrayIdOfNextValidIndex] >= arrayLengthListInArrays[arrayIdOfNextValidIndex] {
-			delete(arrayIdValidIndexMap, arrayIdOfNextValidIndex)
-		}
-	}
-	end := time.Now().UnixNano()
-	fmt.Printf("merge-for-time-cost: %3f, dstLength: %d\n", float64(end - start)/1e9, len(dst))
-}
-
-func Merge(dst []int64, sortedArrays [][]int64) {
-	k := len(sortedArrays)
-
-	// 构建一个容量为k的最小堆
-	minHeap := NewMinHeap(k)
-	// 向堆中添加k个节点
-	arrayIdValidIndexMap := make(map[int]int)
-	arrayLengthListInArrays := make([]int, 0)
-	for index := 0; index < k; index++ {
-		// 保证要处理的序列非空
-		arrayLength := len(sortedArrays[index])
-		if arrayLength == 0 {
-			continue
-		}
-		minHeap.AppendNode(*NewTraceableElement(sortedArrays[index][0], index))
-		arrayIdValidIndexMap[index] = 1
-		// 记录每一个序列的长度
-		arrayLengthListInArrays = append(arrayLengthListInArrays, arrayLength)
-	}
-	// 合并
-	start := time.Now().UnixNano()
-	for index := 0; ; {
 		// 若所有序列中的元素已处理或在堆中，则将堆中剩余的节点按照顺序放入finalArray中后退出循环，完成所有元素排序
 		if len(arrayIdValidIndexMap) == 0 && !minHeap.IsEmpty() {
 			for !minHeap.IsEmpty() {
@@ -227,4 +170,3 @@ func getGroupLen(totalLength, baseLength int64) int64 {
 		return totalLength / baseLength + 1
 	}
 }
-
