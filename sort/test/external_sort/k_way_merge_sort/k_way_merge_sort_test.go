@@ -4,6 +4,7 @@ import (
 	"data-structure-golang-implement/sort/external_sort/k_way_merge_sort"
 	"data-structure-golang-implement/utils"
 	"fmt"
+	"sort"
 	"testing"
 	"time"
 )
@@ -43,10 +44,18 @@ func TestKWayMergeSort(t *testing.T) {
 
 	//k_way_merge_sort.TraverseIntArray(nums)
 	start := time.Now().UnixNano()
-	nums = k_way_merge_sort.KWayMergeSort(nums)
+	sortedNums := k_way_merge_sort.KWayMergeSort(nums)
 	end := time.Now().UnixNano()
 	println()
 	fmt.Printf("arrayLength: %d, time: %d\n", len(nums), int(float64(end - start) / 1e9))
 	println()
-	//k_way_merge_sort.TraverseIntArray(nums)
+	k_way_merge_sort.TraverseIntArray(sortedNums[:20])
+	start = time.Now().UnixNano()
+	qkSortedNums := nums
+	sort.Ints(qkSortedNums)
+	end = time.Now().UnixNano()
+	println()
+	fmt.Printf("arrayLength: %d, time: %d\n", len(nums), int(float64(end - start) / 1e9))
+	println()
+	k_way_merge_sort.TraverseIntArray(qkSortedNums[:20])
 }
